@@ -68,8 +68,8 @@ def reduce_dimensionality(data: np.ndarray, grad: np.ndarray) -> np.ndarray:
     for _ in range(ndims_added):
         grad = grad.sum(axis=0)
     
-    axis = np.argmax(np.abs(np.array(data.shape) - np.array(grad.shape)))
     if (data.shape != grad.shape):
+        axis = np.argmax(np.abs(np.array(data.shape) - np.array(grad.shape)))
         grad = grad.sum(axis = axis, keepdims=True)
     
     return grad
