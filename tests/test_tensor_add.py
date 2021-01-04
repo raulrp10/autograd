@@ -1,5 +1,6 @@
 import unittest
 import pytest
+import numpy as np
 from torch import tensor
 from autograd.tensor import Tensor
 
@@ -88,3 +89,27 @@ class TestTensorSum(unittest.TestCase):
 
         assert tensor1.grad.data.tolist() == [[1, 1, 1], [1, 1, 1]]
         assert tensor2.grad.data.tolist() == [[2, 2, 2]]
+    
+    def test_iadd(self):
+        """Test iadd of tensor (tensor-=another_tensor) with the same shape
+        """
+        tensor1 = Tensor([2, 4, 6, 8], requires_grad=True)
+        tensor2 = Tensor([5, 8, 1, 2])
+        
+        tensor2 += tensor1
+        assert tensor2.data.tolist() == [7, 12, 7, 10]
+
+        tensor2 += 1
+        assert tensor2.data.tolist() == [8, 13, 8, 11]
+   
+    def test_radd(self):
+        """ Test radd of tensor and another type (np.ndarray, float, integer)
+        """
+        tensor = Tensor([2, 4, 6, 8])
+        result = 1 + tensor
+        result_np = np.array(1) + tensor
+        result_arr = [1, 1, 1, 1] + tensor
+
+        assert result.data.tolist() == [3, 5, 7, 9]
+        assert result_np.data.tolist() == [3, 5, 7, 9]
+        assert result_arr.data.tolist() == [3, 5, 7, 9]

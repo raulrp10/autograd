@@ -98,3 +98,27 @@ class TestTensorMul(unittest.TestCase):
         assert tensor3.data.tolist() == torch_tensor3.data.tolist()
         assert tensor1.grad.data.tolist() == torch_tensor1.grad.data.tolist()
         assert tensor2.grad.data.tolist() == torch_tensor2.grad.data.tolist()
+
+    def test_imul(self):
+        """Test imul of tensor (tensor*=another_tensor) with the same shape
+        """
+        tensor1 = Tensor([2, 4, 6, 8], requires_grad=True)
+        tensor2 = Tensor([5, 8, 1, 2])
+        
+        tensor2 *= tensor1
+        assert tensor2.data.tolist() == [10, 32, 6, 16]
+
+        tensor2 *= tensor1
+        assert tensor2.data.tolist() == [20, 128, 36, 128]
+   
+    def test_rmul(self):
+        """ Test rmul of tensor and another type (np.ndarray, float, integer)
+        """
+        tensor = Tensor([2, 4, 6, 8])
+        result = 2 * tensor
+        result_np = np.array(2) * tensor
+        result_arr = [2, 2, 2, 2] * tensor
+
+        assert result.data.tolist() == [4, 8, 12, 16]
+        assert result_np.data.tolist() == [4, 8, 12, 16]
+        assert result_arr.data.tolist() == [4, 8, 12, 16]

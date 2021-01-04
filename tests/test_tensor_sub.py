@@ -1,5 +1,6 @@
 import unittest
 import pytest
+import numpy as np
 from torch import tensor
 from autograd.tensor import Tensor
 
@@ -97,3 +98,28 @@ class TestTensorSub(unittest.TestCase):
         assert tensor3.data.tolist() == torch_tensor3.data.tolist()
         assert tensor1.grad.data.tolist() == torch_tensor1.grad.data.tolist()
         assert tensor2.grad.data.tolist() == torch_tensor2.grad.data.tolist()
+
+    def test_isub(self):
+        """Test isub of tensor (tensor-=another_tensor) with the same shape
+        """
+        tensor1 = Tensor([2, 4, 6, 8], requires_grad=True)
+        tensor2 = Tensor([5, 8, 1, 2])
+        
+        tensor2 -= tensor1
+        assert tensor2.data.tolist() == [3, 4, -5, -6]
+
+        tensor2 -= 1
+        assert tensor2.data.tolist() == [2, 3, -6, -7]
+
+        
+    def test_rsub(self):
+        """ Test sub of tensor and another type (np.ndarray, float, integer)
+        """
+        tensor = Tensor([2, 4, 6, 8])
+        result = 1 - tensor
+        result_np = np.array(1) - tensor
+        result_arr = [1, 1, 1, 1] - tensor
+
+        assert result.data.tolist() == [-1, -3, -5, -7]
+        assert result_np.data.tolist() == [-1, -3, -5, -7]
+        assert result_arr.data.tolist() == [-1, -3, -5, -7]

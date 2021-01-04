@@ -98,3 +98,27 @@ class TestTensorDiv(unittest.TestCase):
         assert tensor3.data.tolist() == torch_tensor3.data.tolist()
         assert np.round(tensor1.grad.data, 2).tolist() == np.round(torch_tensor1.grad.data, 2).tolist()
         assert np.round(tensor2.grad.data, 2).tolist() == np.round(torch_tensor2.grad.data, 2).tolist()
+
+    def test_idiv(self):
+        """Test idiv of tensor (tensor/=another_tensor) with the same shape
+        """
+        tensor1 = Tensor([2, 2, 2, 2], requires_grad=True)
+        tensor2 = Tensor([4, 8, 12, 16])
+        
+        tensor2 /= tensor1
+        assert tensor2.data.tolist() == [2, 4, 6, 8]
+
+        tensor2 /= tensor1
+        assert tensor2.data.tolist() == [1, 2, 3, 4]
+   
+    def test_rdiv(self):
+        """ Test rdiv of tensor and another type (np.ndarray, float, integer)
+        """
+        tensor = Tensor([2, 4, 8, 16])
+        result = 16 / tensor
+        result_np = np.array(16) / tensor
+        result_arr = [16, 16, 16, 16] / tensor
+
+        assert result.data.tolist() == [8, 4, 2, 1]
+        assert result_np.data.tolist() == [8, 4, 2, 1]
+        assert result_arr.data.tolist() == [8, 4, 2, 1]
