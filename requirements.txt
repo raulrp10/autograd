@@ -1,0 +1,6 @@
+numpy
+torch
+matplotlib
+cython
+wheel
+sklearn
