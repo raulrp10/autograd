@@ -67,8 +67,6 @@ class Tanh(Function):
         return sinh / cosh
 
     def grad_fn(self, grad: np.ndarray) -> np.ndarray:
-        '''Función que calcula la derivada de la función de activacion de tangente
-        hiperbolica '''
         return grad * (1 - np.power(self.tanh(self.value.data),2))
 
     def forward(self, value: 'Tensor') -> Tuple[np.ndarray, bool]:
@@ -112,20 +110,6 @@ class Softmax(Function):
         dSoftmax = tensor2 - tensor1
         dz = np.einsum('ijk,ik->ij', dSoftmax, grad)
         return dz
-
-    def softmax_gradient(self, z):
-        """Computes the gradient of the softmax function.
-        z: (T, 1) array of input values where the gradient is computed. T is the
-        number of output classes.
-        Returns D (T, T) the Jacobian matrix of softmax(z) at the given z. D[i, j]
-        is DjSi - the partial derivative of Si w.r.t. input j.
-        """
-        Sz = self.softmax(z)
-        # -SjSi can be computed using an outer product between Sz and itself. Then
-        # we add back Si for the i=j cases by adding a diagonal matrix with the
-        # values of Si on its diagonal.
-        D = -np.outer(Sz, Sz) + np.diag(Sz.flatten())
-        return D
     
     def backward(self) -> List[Dependency]:
         if self.value.requires_grad:
